@@ -6,6 +6,7 @@
 <title>Happy Anniversary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 <style>
   :root{
     --cream:#efe8db;
@@ -350,6 +351,23 @@
     margin:0;
     pointer-events:none;
   }
+  .letter .fold-hint{
+    text-align:center;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    opacity:0;
+    height:0;
+    margin:0;
+    transition:opacity .4s ease .3s;
+    pointer-events:none;
+  }
+  .letter.open .fold-hint{
+    opacity:0.45;
+    height:auto;
+    margin-top:24px;
+    pointer-events:auto;
+  }
   .seal{
     width:34px;height:34px;
     border-radius:50%;
@@ -559,7 +577,10 @@ here's to forever not as a promise I'm making,
 
 but as a place I already know I live.</div>
     </div>
+    <div class="fold-hint">tap to close</div>
   </section>
+
+  <div id="spotify-embed" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;"></div>
 
   <section class="constellation-section">
     <p class="gallery-intro">the twins &amp; the archer</p>
@@ -725,13 +746,33 @@ function tickCounters(){
 tickCounters();
 setInterval(tickCounters, 1000);
 
-// ---- Letter unfold ----
+// ---- Letter unfold / fold, with Spotify tied to open state ----
+let spotifyController = null;
+window.onSpotifyIframeApiReady = (IFrameAPI) => {
+  const element = document.getElementById('spotify-embed');
+  const options = {
+    uri: 'spotify:track:3MhbnxA1JnksiATu9xyB2c',
+    width: '1',
+    height: '1'
+  };
+  IFrameAPI.createController(element, options, (EmbedController) => {
+    spotifyController = EmbedController;
+  });
+};
+
 const letterEl = document.getElementById('letter');
 const poemWrap = letterEl.querySelector('.poem-wrap');
 letterEl.addEventListener('click', () => {
-  if (letterEl.classList.contains('open')) return;
-  letterEl.classList.add('open');
-  poemWrap.style.maxHeight = poemWrap.scrollHeight + 'px';
+  const isOpen = letterEl.classList.contains('open');
+  if (!isOpen) {
+    letterEl.classList.add('open');
+    poemWrap.style.maxHeight = poemWrap.scrollHeight + 'px';
+    if (spotifyController) spotifyController.play();
+  } else {
+    letterEl.classList.remove('open');
+    poemWrap.style.maxHeight = '0px';
+    if (spotifyController) spotifyController.pause();
+  }
 });
 </script>
 
