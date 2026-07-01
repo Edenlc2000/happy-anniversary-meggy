@@ -404,6 +404,16 @@
     stroke:rgba(232,224,207,0.28);
     stroke-width:1;
   }
+  .constellation svg.lines line.bridge{
+    stroke:var(--red);
+    stroke-width:1.6;
+    stroke-dasharray:5 4;
+    opacity:0.85;
+    animation:dash 3s linear infinite;
+  }
+  @keyframes dash{
+    to{stroke-dashoffset:-18;}
+  }
   .star-dust{
     position:absolute;
     border-radius:50%;
@@ -552,8 +562,8 @@ but as a place I already know I live.</div>
   </section>
 
   <section class="constellation-section">
-    <p class="gallery-intro">written in the stars</p>
-    <p class="zodiac-sub">cancer · july 2nd</p>
+    <p class="gallery-intro">the twins &amp; the archer</p>
+    <p class="zodiac-sub">gemini (you're stuck with me) · sagittarius (born december)</p>
     <div class="constellation" id="constellation">
       <svg class="lines" id="constellation-lines" viewBox="0 0 400 300" preserveAspectRatio="none"></svg>
     </div>
@@ -584,17 +594,23 @@ items.slice(0,3).forEach(item => {
 let activeAudio = null;
 let activeStar = null;
 
-// Cancer-inspired star layout (crab shape) in a 400x300 space
+// Two constellations reaching for each other: Gemini (the twins, June) on the
+// left, Sagittarius (the archer's teapot, December) on the right, joined by
+// one bridge line across the gap between them.
 const starPoints = [
-  {x:60,  y:40},  {x:100, y:70},  {x:130, y:110}, {x:160, y:90},
-  {x:200, y:70},  {x:240, y:90},  {x:270, y:110}, {x:300, y:70},
-  {x:340, y:40},  {x:150, y:150}, {x:250, y:150}, {x:120, y:220},
-  {x:200, y:240}, {x:280, y:220}
+  {x:50,  y:30},  {x:45,  y:75},  {x:55,  y:130}, {x:48,  y:190}, // twin A
+  {x:130, y:30},  {x:135, y:75},  {x:125, y:130}, {x:132, y:190}, // twin B
+  {x:250, y:150}, {x:280, y:165}, {x:300, y:110}, {x:335, y:140}, // archer
+  {x:320, y:190}, {x:355, y:165}
 ];
 const starLines = [
-  [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],
-  [3,9],[5,10],[9,10],[9,11],[10,13],[2,9],[6,10],[11,12],[12,13]
+  [0,1],[1,2],[2,3],           // twin A spine
+  [4,5],[5,6],[6,7],           // twin B spine
+  [1,5],                       // twins holding hands
+  [9,10],[10,11],[11,12],[12,9],[11,13],[13,12], // teapot / archer's bow
+  [8,9]                        // spout
 ];
+const bridgeLine = [7, 8]; // twin B's foot reaching to the archer's spout tip
 
 const constellation = document.getElementById('constellation');
 const linesSvg = document.getElementById('constellation-lines');
@@ -607,6 +623,16 @@ starLines.forEach(([a,b]) => {
   line.setAttribute('x2', p2.x); line.setAttribute('y2', p2.y);
   linesSvg.appendChild(line);
 });
+// the bridge, styled distinctly
+{
+  const [a,b] = bridgeLine;
+  const p1 = starPoints[a], p2 = starPoints[b];
+  const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1', p1.x); line.setAttribute('y1', p1.y);
+  line.setAttribute('x2', p2.x); line.setAttribute('y2', p2.y);
+  line.setAttribute('class', 'bridge');
+  linesSvg.appendChild(line);
+}
 
 // place stars (one per photo/memo)
 items.forEach((item, i) => {
