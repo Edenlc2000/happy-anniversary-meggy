@@ -6,7 +6,6 @@
 <title>Happy Anniversary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 <style>
   :root{
     --cream:#efe8db;
@@ -580,8 +579,6 @@ but as a place I already know I live.</div>
     <div class="fold-hint">tap to close</div>
   </section>
 
-  <div id="spotify-embed" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;"></div>
-
   <section class="constellation-section">
     <p class="gallery-intro">the twins &amp; the archer</p>
     <p class="zodiac-sub">gemini ♥ sagittarius</p>
@@ -746,20 +743,7 @@ function tickCounters(){
 tickCounters();
 setInterval(tickCounters, 1000);
 
-// ---- Letter unfold / fold, with Spotify tied to open state ----
-let spotifyController = null;
-window.onSpotifyIframeApiReady = (IFrameAPI) => {
-  const element = document.getElementById('spotify-embed');
-  const options = {
-    uri: 'spotify:track:3MhbnxA1JnksiATu9xyB2c',
-    width: '1',
-    height: '1'
-  };
-  IFrameAPI.createController(element, options, (EmbedController) => {
-    spotifyController = EmbedController;
-  });
-};
-
+// ---- Letter unfold / fold ----
 const letterEl = document.getElementById('letter');
 const poemWrap = letterEl.querySelector('.poem-wrap');
 letterEl.addEventListener('click', () => {
@@ -767,11 +751,9 @@ letterEl.addEventListener('click', () => {
   if (!isOpen) {
     letterEl.classList.add('open');
     poemWrap.style.maxHeight = poemWrap.scrollHeight + 'px';
-    if (spotifyController) spotifyController.play();
   } else {
     letterEl.classList.remove('open');
     poemWrap.style.maxHeight = '0px';
-    if (spotifyController) spotifyController.pause();
   }
 });
 </script>
